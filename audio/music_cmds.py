@@ -59,6 +59,8 @@ class Music:
     Works in multiple servers at once.
     """
     def __init__(self, bot):
+        self.voice_channel = None
+        self.voice_clients = None
         self.bot = bot
         self.voice_states = {}
 
@@ -84,20 +86,27 @@ class Music:
             except:
                 pass
 
-    async def join(bot, channel: discord.Channel):
+    async def join(self, ctx, channel: discord.Channel):
         """Joins a voice channel."""
         try:
-            await bot.join_voice_channel(channel)
-        except discord.ClientException:
-            await bot.say('Already in a voice channel...')
+            await ctx.bot.join_voice_channel(channel)
         except discord.InvalidArgument:
-            await bot.say('User not in a voice channel...')
+            await ctx.bot.say("User not in a voice channel...")
+        except discord.ClientException:
+            await ctx.bot.say("Already in a voice channel...")
         else:
-            await bot.say('Ready to play audio in ' + channel.name)
+            await ctx.bot.say('Ready to play audio in {}'.format(channel.name))
+
+    async def leave(self, ctx):
+        """Leaves the voice channel."""
+        for x in self.voice_clients:
+            if x.server == ctx.message.server:
+                await self.say('Leaving {}...'.format(ctx.message.server.name))
+                return await x.disconnect()
 
     async def summon(self, ctx):
         """Summons the bot to join your voice channel."""
-        summoned_channel = ctx.message.author.voice_channel
+        summoned_channel = self.voice_channel
         if summoned_channel is None:
             await self.bot.say('You are not in a voice channel.')
             return False
@@ -163,23 +172,6 @@ class Music:
             player = state.player
             player.resume()
 
-    async def stop(self, ctx):
-        """Stops playing audio and leaves the voice channel.
-        This also clears the queue.
-        """
-        server = ctx.message.server
-        state = self.get_voice_state(server)
-
-        if state.is_playing():
-            player = state.player
-            player.stop()
-
-        try:
-            state.audio_player.cancel()
-            del self.voice_states[server.id]
-            await state.voice.disconnect()
-        except:
-            pass
 
     async def skip(self, ctx):
         """Vote to skip a song. The song requester can automatically skip.
@@ -217,4 +209,7 @@ class Music:
             await self.bot.say('Now playing {} [skips: {}/3]'.format(state.current, skip_count))
 
     def join_voice_channel(self, channel):
+        pass
+
+    def say(self, param):
         pass
