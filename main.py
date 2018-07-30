@@ -271,10 +271,14 @@ bot.add_cog(Music(bot))
 
 @bot.event
 async def on_ready():
+    servers = list(bot.servers)
     await bot.change_presence(game=discord.Game(name=']help'))
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
+    print("Conntected on {} servers.".format(str(len(bot.servers))))
+    for x in range(len(servers)):
+        print(' ' + servers[x-1].name)
     print('------')
 
 
@@ -384,6 +388,7 @@ async def help():
     em.add_field(name="add", value="Adds two numbers together. Usage: ]add 5 7", inline=True)
     em.add_field(name="roll", value="Rolls die. Usage: ]roll (number of die)d(number of sides)", inline=True)
     em.add_field(name="choose", value="Choose between options. Usage: ]choose cat dog", inline=True)
+    em.add_field(name="tf", value="Stands for \"toggle filter\". Toggles chat filter on/off.", inline=True)
     em.add_field(name="play", value="Plays an audio file from the internet. Usage: ]play (video url)", inline=True)
     em.add_field(name="summon", value="Bot joins the voice channel the user is in.", inline=True)
     em.add_field(name="join", value="Bot joins the specified voice channel. Usage: ]join (channel name)", inline=True)
