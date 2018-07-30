@@ -1,8 +1,6 @@
 # dudbot
 ## A Discord bot written in Python 3.5
 
-Check the experimental branch for the latest build.
-
 This bot is written by @bobby_rosskin#0220.
 If you have any questions, you can reach me at discord.
 
@@ -16,8 +14,8 @@ Adds two numbers together. Usage: ]add 5 7
 Rolls die. Usage: ]roll (number of die)d(number of sides)
 ### choose
 Choose between options. Usage: ]choose cat dog
-### repeat
-Repeats a phrase. Usage: ]repeat (number of repeats) phrase
+### tf
+Stands for "toggle filter". Toggles chat filter on/off.
 ### play
 Plays an audio file from the internet. Usage: ]play (video url)
 ### summon
