@@ -16,8 +16,8 @@ Adds two numbers together. Usage: ]add 5 7
 Rolls die. Usage: ]roll (number of die)d(number of sides)
 ### choose
 Choose between options. Usage: ]choose cat dog
-### repeat
-Repeats a phrase. Usage: ]repeat (number of repeats) phrase
+### tf
+Stands for "toggle filter". Toggles chat filter on/off.
 ### play
 Plays an audio file from the internet. Usage: ]play (video url)
 ### summon
