@@ -34,6 +34,14 @@ Resumes playing the audio file.
 Skips the audio file and plays the next one in the queue.
 ### playing
 Displays currently playing audio.
+### reddit
+Posts images from the specified subreddit.
+### iqdb
+Reverse image search with IQDB.
+### sauce
+Reverse images search with saucenao.
+### tineye
+Reverse image search with tineye.
 ### info
 Gives information about the user.
 ### serverinfo
