@@ -8,7 +8,7 @@ import config
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 description = "A bot to make a dude feel cosy."
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('['), description=description)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(']'), description=description)
 bot.remove_command("help")
 
 cogs = ['extensions.utility', 'extensions.music', 'extensions.image_search', 'extensions.reddit']
@@ -26,7 +26,7 @@ if not discord.opus.is_loaded():
 @bot.event
 async def on_ready():
     servers = list(bot.servers)
-    await bot.change_presence(game=discord.Game(name='[help'))
+    await bot.change_presence(game=discord.Game(name=']help'))
     print('Logged in as:')
     print(bot.user.name)
     print(bot.user.id)
