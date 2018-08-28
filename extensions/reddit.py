@@ -11,6 +11,8 @@ from main import __location__
 
 reddit_icon = 'https://camo.githubusercontent.com/b13830f5a9baecd3d83ef5cae4d5107d25cdbfbe/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f3732313033382f313732383830352f35336532613364382d363262352d313165332d383964312d3934376632373062646430332e706e67'
 reddit = praw.Reddit(client_id=reddit['client_id'], client_secret=reddit['client_secret'], password=reddit['password'], user_agent=reddit['user_agent'], username=reddit['username'])
+duplicate_filter_file = open(os.path.join(__location__, 'duplicate_image_filter.txt'))  # TODO find and apply the best way to read and write the duplicate_filter_file
+duplicate_filter = duplicate_filter_file.read().split('\n')
 
 
 class Reddit:
@@ -28,17 +30,17 @@ class Reddit:
     @reddit.command(pass_context=True)
     async def pic(self, ctx, sub: str):
                 try:
-                    submissions = list(reddit.subreddit(sub).hot(limit=50))
+                    submissions = list(reddit.subreddit(sub).hot(limit=100))
                 except:
                     return await self.bot.say('Subreddit not found')
 
                 if len(submissions) == 0:
                     return await self.bot.say('Not any images on this sub')
 
-                rand = randint(0, 49) if len(submissions) >= 50 else randint(0, len(submissions))
+                rand = randint(0, 99) if len(submissions) >= 100 else randint(0, len(submissions))
                 picture = submissions[rand].url
                 while 'imgur.com/a/' in picture or 'reddit.com/r/' in picture:
-                    rand = randint(0, 49) if len(submissions) >= 50 else randint(0, len(submissions))
+                    rand = randint(0, 99) if len(submissions) >= 100 else randint(0, len(submissions))
                     picture = submissions[rand].url
 
                 if 'jpg' not in picture and 'png' not in picture:
@@ -46,16 +48,14 @@ class Reddit:
 
                 print(picture)
 
-                with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'r') as read_data:
-                    duplicate_filter = read_data.read().split('\n')
-
                 for x in duplicate_filter:
-                    if x != picture:
+                    if str(picture) in str(x):
+                        with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
+                            data.write(picture + '\n')
                         await self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
                         break
-
-                with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
-                    data.write(picture + '\n')
+                    else:
+                        print('Image already in database. [{}]'.format(picture))
 
     @reddit.command(pass_context=True)
     async def ao(self):
@@ -67,37 +67,34 @@ class Reddit:
         self.is_auto = True
         while self.is_auto is True:
             try:
-                submissions = list(reddit.subreddit(sub).hot(limit=50))
+                submissions = list(reddit.subreddit(sub).hot(limit=100))
             except:
                 return await self.bot.say('Subreddit not found')
 
             if len(submissions) == 0:
                 return await self.bot.say('Not any images on this sub')
 
-            rand = randint(0, 49) if len(submissions) >= 50 else randint(0, len(submissions))
+            rand = randint(0, 99) if len(submissions) >= 100 else randint(0, len(submissions))
             picture = submissions[rand].url
             while 'imgur.com/a/' in picture or 'reddit.com/r/' in picture:
-                rand = randint(0, 49) if len(submissions) >= 50 else randint(0, len(submissions))
+                rand = randint(0, 99) if len(submissions) >= 100 else randint(0, len(submissions))
                 picture = submissions[rand].url
 
             if 'jpg' not in picture and 'png' not in picture:
                 picture += '.jpg'
 
-            print(picture)
-
-            with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'r') as read_data:
-                duplicate_filter = read_data.read().split('\n')
-
             for x in duplicate_filter:
-                if x != picture:
-                    await self.bot.say(
-                        embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
+                if picture not in x:
+                    duplicate_filter_file.close()
+                    with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
+                        data.write(picture + '\n')
+                    await self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
+                    await asyncio.sleep(interval * 60)
                     break
-
-            with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
-                data.write(picture + '\n')
-
-            await asyncio.sleep(interval*60)
+                else:
+                    print('Image already in database. [{}]'.format(picture))
+                    await asyncio.sleep(10)
+                    break
 
 
 def setup(bot):
