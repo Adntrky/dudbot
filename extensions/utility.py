@@ -133,6 +133,17 @@ class Utility:
         em.set_image(url="https://i.ytimg.com/vi/ffQmb-cNFuk/maxresdefault.jpg")
         await self.bot.say(embed=em)
 
+    @commands.command(pass_context=True)
+    async def clean(self, ctx, number=None):
+        mgs = []
+        if number is None:
+            number = 100
+        number = int(number)
+        async for x in self.bot.logs_from(ctx.message.channel, limit=number):
+            if ctx.message.author == x.author:
+                mgs.append(x)
+        await self.bot.delete_messages(mgs)
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
