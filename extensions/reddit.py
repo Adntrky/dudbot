@@ -11,7 +11,7 @@ from main import __location__
 
 reddit_icon = 'https://camo.githubusercontent.com/b13830f5a9baecd3d83ef5cae4d5107d25cdbfbe/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f3732313033382f313732383830352f35336532613364382d363262352d313165332d383964312d3934376632373062646430332e706e67'
 reddit = praw.Reddit(client_id=reddit['client_id'], client_secret=reddit['client_secret'], password=reddit['password'], user_agent=reddit['user_agent'], username=reddit['username'])
-duplicate_filter_file = open(os.path.join(__location__, 'duplicate_image_filter.txt'))  # TODO find and apply the best way to read and write the duplicate_filter_file
+duplicate_filter_file = open(os.path.join(__location__, 'duplicate_image_filter.txt'))
 duplicate_filter = duplicate_filter_file.read().split('\n')
 
 
