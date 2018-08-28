@@ -11,8 +11,6 @@ from main import __location__
 
 reddit_icon = 'https://camo.githubusercontent.com/b13830f5a9baecd3d83ef5cae4d5107d25cdbfbe/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f3732313033382f313732383830352f35336532613364382d363262352d313165332d383964312d3934376632373062646430332e706e67'
 reddit = praw.Reddit(client_id=reddit['client_id'], client_secret=reddit['client_secret'], password=reddit['password'], user_agent=reddit['user_agent'], username=reddit['username'])
-duplicate_filter_file = open(os.path.join(__location__, 'duplicate_image_filter.txt'))  # TODO find and apply the best way to read and write the duplicate_filter_file
-duplicate_filter = duplicate_filter_file.read().split('\n')
 
 
 class Reddit:
@@ -46,16 +44,15 @@ class Reddit:
                 if 'jpg' not in picture and 'png' not in picture:
                     picture += '.jpg'
 
-                print(picture)
+                with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'r') as duplicate_filter_file:
+                    duplicate_filter = duplicate_filter_file.read().split('\n')
 
-                for x in duplicate_filter:
-                    if str(picture) in str(x):
-                        with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
-                            data.write(picture + '\n')
-                        await self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
-                        break
-                    else:
-                        print('Image already in database. [{}]'.format(picture))
+                if picture not in duplicate_filter:
+                    with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
+                        data.write(picture + '\n')
+                        self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
+                else:
+                    print('Image already in database. [{}]'.format(picture))
 
     @reddit.command(pass_context=True)
     async def ao(self):
@@ -83,18 +80,17 @@ class Reddit:
             if 'jpg' not in picture and 'png' not in picture:
                 picture += '.jpg'
 
-            for x in duplicate_filter:
-                if picture not in x:
-                    duplicate_filter_file.close()
-                    with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
-                        data.write(picture + '\n')
-                    await self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
-                    await asyncio.sleep(interval * 60)
-                    break
-                else:
-                    print('Image already in database. [{}]'.format(picture))
-                    await asyncio.sleep(10)
-                    break
+            with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'r') as duplicate_filter_file:
+                duplicate_filter = duplicate_filter_file.read().split('\n')
+
+            if picture not in duplicate_filter:
+                with open(os.path.join(__location__, 'duplicate_image_filter.txt'), 'a') as data:
+                    data.write(picture + '\n')
+                await self.bot.say(embed=discord.Embed().set_image(url=picture).set_footer(text=sub, icon_url=reddit_icon))
+                await asyncio.sleep(interval * 60)
+            else:
+                print('Image already in database. [{}]'.format(picture))
+                await asyncio.sleep(10)
 
 
 def setup(bot):
