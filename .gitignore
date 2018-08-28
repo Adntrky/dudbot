@@ -22,12 +22,9 @@
 
 # Logs and databases #
 ######################
-config.py
 *.log
 *.sql
 *.sqlite
-*.txt
-*.md
 
 # OS generated files #
 ######################
