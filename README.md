@@ -4,6 +4,11 @@
 This bot is written by @bobby_rosskin#0220.
 If you have any questions, you can reach me at discord.
 
+## Dependencies:
+- discord.py
+- youtube-dl
+- PyNaCl
+
 ## Commands list:
 
 ### dud
