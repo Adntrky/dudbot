@@ -87,7 +87,7 @@ class Utility:
         await self.bot.say(random.choice(choices))
 
     @commands.command()
-    async def repeat(self, times: int, content='repeating'):
+    async def r(self, times: int, content='repeating'):
         """Repeats a message multiple times."""
         if times <= 5:
             for i in range(times):
@@ -134,15 +134,39 @@ class Utility:
         await self.bot.say(embed=em)
 
     @commands.command(pass_context=True)
-    async def clean(self, ctx, number=None):
+    async def clean(self, ctx, number=None, user=None):
         mgs = []
-        if number is None:
-            number = 100
-        number = int(number)
-        async for x in self.bot.logs_from(ctx.message.channel, limit=number):
-            if ctx.message.author == x.author:
-                mgs.append(x)
-        await self.bot.delete_messages(mgs)
+        try:
+            if number is None or number not in range(2, 101):
+                number = 100
+            else:
+                number = int(number)
+            if user is None:
+                async for x in self.bot.logs_from(ctx.message.channel, limit=(number + 1)):
+                    if ctx.message.author == x.author:
+                        mgs.append(x)
+            else:
+                async for x in self.bot.logs_from(ctx.message.channel, limit=(number + 1)):
+                    if x.author.id in user:
+                        mgs.append(x)
+            await self.bot.delete_messages(mgs)
+        except discord.ClientException:
+            await self.bot.say('Cannot delete messages sent earlier than 14 days.')
+
+    @commands.command(pass_context=True)
+    async def dclean(self, ctx, number=None):
+        mgs = []
+        try:
+            if number is None or number not in range(2, 101):
+                number = 100
+            else:
+                number = int(number)
+            async for x in self.bot.logs_from(ctx.message.channel, limit=(number + 1)):
+                if 'dudbot' == x.author.name:
+                    mgs.append(x)
+            await self.bot.delete_messages(mgs)
+        except discord.ClientException:
+            await self.bot.say('Cannot delete messages sent earlier than 14 days.')
 
 
 def setup(bot):
