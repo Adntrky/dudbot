@@ -3,6 +3,7 @@
 
 This bot is written by @bobby_rosskin#0220.
 If you have any questions, you can reach me at discord.
+
 Invite the bot to your server: https://discordapp.com/oauth2/authorize?&client_id=385864505227476994&scope=bot&permissions=8
 
 ## Dependencies:
